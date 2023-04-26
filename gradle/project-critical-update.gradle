@@ -1,0 +1,25 @@
+println "======================================== critical updates =========================="
+subprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group.contains('org.apache.bcel') && 
+                    details.requested.name.contains('bcel') &&
+                    details.requested.version.contains('6.5.0')) {
+                    println "correction cve-org.apache.bcel.bcel-6.6.1"
+                    details.useVersion '6.6.1'
+            }
+            if (details.requested.group.contains('org.apache.commons') && 
+                    details.requested.name.contains('commons-text') &&
+                    details.requested.version.contains('1.9')) {
+                    println "correction cpe:2.3:a:apache:commons_text:1.9"
+                    details.useVersion '1.10.0'
+            }
+            if (details.requested.group.contains('com.google.code.gson') && 
+                    details.requested.name.contains('gson') &&
+                    details.requested.version.contains('2.8.7')) {
+                    println "correction cpe:2.3:a:google:gson:2.8.7"
+                    details.useVersion '2.10'
+            }        
+        }
+    }
+}

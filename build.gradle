@@ -1,0 +1,198 @@
+// Initialisation des plugins
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2"
+        }
+    }
+    dependencies {
+        classpath (group: 'fr.lixbox.plugins', name: 'lixbox-gradle-plugins', version: '11.1.0.19')
+        classpath 'org.postgresql:postgresql:42.2.23'
+        classpath('com.google.guava:guava:30.1.1-jre')
+    }
+}
+plugins {
+    id "com.github.jk1.dependency-license-report" version "1.16"
+    id "org.ajoberstar.grgit" version "4.0.2"
+    id "com.github.spotbugs" version "4.7.2"
+    id 'maven-publish'
+}
+
+//Global configuration
+apply plugin: 'fr.lixbox.gradle.plugins'
+
+ext.env = project.hasProperty("env") ? project.getProperty("env") : "local"
+println "Loading configuration for environment '$ext.env'...."
+def configFile = file("$rootDir/gradle/config/environment.groovy")
+def parsedConfig = new ConfigSlurper(ext.env).parse(configFile.toURL())
+def configDir = new File(rootDir, '/config/checkstyle/checkstyle.xml')
+ext.config = parsedConfig
+group = "${config.desc_project.artefact.group}"
+ext.buildTimestamp = new Date().format('yyyy-MM-dd HH:mm:ss')
+def fix_version = new fr.lixbox.gradle.project.ProjectVersion(
+    config.desc_project.version.majorVersion,
+    config.desc_project.version.mediumVersion,
+    config.desc_project.version.minorVersion,
+    System.env.SOURCE_BUILD_NUMBER
+    ).toString()
+def isProd=ext.env.equals('prod') 
+
+apply from: 'gradle/project-critical-update.gradle'
+
+import org.ajoberstar.grgit.Credentials
+import  org.ajoberstar.grgit.Person
+import groovy.io.FileType
+
+
+allprojects { 
+    apply plugin:'base'
+    group = "$config.desc_project.artefact.group"    
+    version=fix_version
+    repositories{
+        mavenLocal()
+        mavenCentral()
+    }       
+    task cleanDownloadDir(type: Delete) { delete "$buildDir/download" }
+}
+
+subprojects {
+	//Plugins	
+    apply plugin: 'java-library'
+    apply plugin: 'jacoco'
+    apply plugin: "com.github.spotbugs"
+    apply plugin: 'eclipse-wtp'
+
+    task javadocJar(type: Jar) {
+	    classifier = 'javadoc'
+	    from javadoc
+	}
+	
+	task sourcesJar(type: Jar) {
+	    classifier = 'sources'
+	    from sourceSets.main.allSource
+	}
+	
+	java {
+	    withJavadocJar()
+	    withSourcesJar()
+	}
+
+    javadoc {
+        options.encoding = 'UTF-8'
+        failOnError = false
+    }
+     
+    sourceCompatibility = 11
+    targetCompatibility = 11
+    compileJava.options.encoding = 'UTF-8'
+    
+    
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+    tasks.withType(Test) {
+        systemProperty "file.encoding", "utf-8"
+    }
+    
+    eclipseWtp.doLast{
+        File f = file('.settings/org.eclipse.core.resources.prefs')
+        f.write('eclipse.preferences.version=1\n')
+        f.append('encoding/<project>=UTF-8')
+    }
+    
+    eclipse {
+        project {
+            natures 'org.eclipse.buildship.core.gradleprojectnature'
+            buildCommand 'org.eclipse.buildship.core.gradleprojectbuilder'
+        }
+        classpath.file {
+            beforeMerged { classpath ->
+                classpath.entries.clear()
+            }
+        }
+        classpath {
+            defaultOutputDir = file('bin/main')
+            file.withXml { n ->
+                n.asNode().classpathentry.findAll { it.@path.contains('est') }
+                        .each { it.@output = 'bin/test' }
+            }
+            file.withXml { n ->
+                n.asNode().classpathentry.findAll { it.@path.contains('webapp') }
+                        .each { it.@output = 'bin/webapp' }
+            }
+            file.withXml {n -> 
+                n.asNode().classpathentry.findAll{it.@path.contains('est') }
+                        .each{it.appendNode('attributes')
+                            .appendNode('attribute',[name: 'org.eclipse.jst.component.nondependency',value: ''])}
+            }
+            file.whenMerged {
+                entries.each {
+                    source ->
+                        // This seems kludgy.  If the second test is omitted, it fails processing a 'Project Dependency' entry
+                        if (source.kind == 'src' && source.toString().contains('output') && source.output.contains('bin/main_')) {
+                            source.output = 'bin/main'
+                        }
+                }
+            }
+        }
+        eclipse.wtp.component.file {
+            beforeMerged { wtpComponent ->
+                wtpComponent.wbModuleEntries.clear()
+            }
+        }
+    }
+    
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination file("${buildDir}/reports/jacoco")
+        }
+    }
+
+    spotbugs {
+        effort = 'max'
+        excludeFilter=file('../gradle/config/findbugsExcludeFilter.xml')
+    }
+    spotbugsMain {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+    spotbugsTest {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+    
+    jar{
+        manifest {
+            attributes("Implementation-Title": "${config.desc_project.artefact.group}.${rootProject.name}:${project.name}",
+                       "Implementation-Version": version)
+        }
+    }   
+    
+    
+	test{
+		forkEvery 1
+		beforeTest { descr ->
+			logger.warn("Starting Test ${descr.className} : ${descr.name}")
+		}
+        ignoreFailures = false
+	} 
+    test.finalizedBy(jacocoTestReport);
+
+		    
+	//Couverture de code {jacoco}
+	task jacocoIntegrationTestReport(type:JacocoReport){
+		sourceSets sourceSets.main
+	}
+    
+    
+    //Modification des worflows de taches
+    tasks.check.dependsOn tasks.spotbugsMain
+    tasks.check.dependsOn tasks.spotbugsTest
+    tasks.eclipse.dependsOn tasks.cleanEclipse
+}

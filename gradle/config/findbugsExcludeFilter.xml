@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<FindBugsFilter>
+    <Match>
+        <Bug code="EI" />
+    </Match>
+    <Match>
+        <Bug code="EI2" />
+    </Match>
+    <Match>
+        <Bug code="OBL" />
+    </Match>
+    <Match>
+        <Class name="fr.lixbox.common.util.BeanUtil" />
+        <Bug code="MS" />
+    </Match>
+    <Match>
+        <Class name="fr.lixbox.common.util.NumberUtil" />
+        <Bug code="DMI" />
+    </Match>
+    <Match>
+        <Class name="fr.lixbox.common.mail.model.HtmlEmail" />
+        <Bug code="Dm" />
+    </Match>
+    <Match>
+        <Class name="fr.lixbox.common.mail.model.HtmlEmail" />
+        <Bug code="DMI" />
+    </Match>
+    <Match>
+        <Class name="fr.lixbox.common.mail.MailUtil" />
+        <Bug code="DMI" />
+    </Match>
+    <Match>
+        <Class name="fr.lixbox.common.stream.util.ZipUtil" />
+        <Bug code="NP" />
+    </Match>
+    <Match>
+        <Class name="fr.lixbox.common.stream.TestZipUtil" />
+        <Bug code="DMI" />
+    </Match>
+    <Match>
+        <Class name="fr.lixbox.common.mail.util.MailUtil" />
+        <Method name="recupererPiecesJointes"/>
+        <Bug code="RCN" />
+    </Match>    
+</FindBugsFilter>
