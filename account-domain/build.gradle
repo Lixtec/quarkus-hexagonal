@@ -1,0 +1,46 @@
+project(':account-domain'){
+	dependencies {
+        //lixbox
+        api(group: 'fr.lixbox.lixbox-common', name: 'lixbox-core', version: version_lixbox_common)
+        api(group: 'fr.lixbox.lixbox-io', name: 'lixbox-json', version: version_lixbox_io)
+       
+       
+        //divers
+        implementation group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.1'
+
+       
+        // ================================ Test ================================
+		testImplementation group:'io.quarkus', name: 'quarkus-junit5', version:quarkusVersion
+//        testImplementation group: 'io.quarkus', name: 'quarkus-rest-client', version: quarkusVersion
+	}
+    
+    jar{
+       duplicatesStrategy = DuplicatesStrategy.INCLUDE
+       from('dist') {
+          include '**/*.*'
+            into 'META-INF/resources'
+       }
+       manifest {
+            attributes(
+                "Implementation-Title": project.name, 
+                "Implementation-Version": archiveVersion, 
+                "Implementation-Timestamp": new Date()
+            )
+        }
+    }
+    
+    eclipse{
+        project{
+            natures 'org.jboss.tools.ws.jaxrs.nature'
+        }
+        wtp{
+            facet {
+                facet name: 'jst.utility', version: '1.0'
+            }
+        }
+    }
+    
+    test {
+      useJUnitPlatform()
+    }
+}
