@@ -1,4 +1,4 @@
-package fr.lixtec.hexagonal.bootstrap;
+package fr.lixtec.hexagonal.account.bootstrap;
 
 import fr.lixtec.hexagonal.account.application.port.driven.CreateAccountUseCase;
 import fr.lixtec.hexagonal.account.application.port.driven.DepositMoneyUseCase;
@@ -6,7 +6,7 @@ import fr.lixtec.hexagonal.account.application.port.driven.TransferMoneyUseCase;
 import fr.lixtec.hexagonal.account.application.port.driven.WithdrawMoneyUseCase;
 import fr.lixtec.hexagonal.account.application.port.driving.LoadAccountPort;
 import fr.lixtec.hexagonal.account.application.port.driving.ManageAccountPort;
-import fr.lixtec.hexagonal.application.service.AccountServiceImpl;
+import fr.lixtec.hexagonal.account.application.service.AccountServiceImpl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;

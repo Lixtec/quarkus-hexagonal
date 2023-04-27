@@ -1,60 +1,31 @@
-# quarkus-hexagonal-test Project
+# quarkus-hexagonal Projet
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Ce projet est l'illustration de l'article [Architecture Hexagonale : Comment créer des applications polyvalentes](https://lixtec.fr/architecture-hexagonale-hexagonal-architecture)
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## Synthèse de l'architecture Hexagonale
 
-## Running the application in dev mode
+L’Architecture Hexagonale, également connue sous le nom de Ports et Adapters, suit un modèle architectural dans lequel les entrées des utilisateurs ou des systèmes externes arrivent dans l’Application via un Port grâce à un Adaptateur, et où les sorties de l’Application sont envoyées via un Port à un Adaptateur. Cela crée une couche d’abstraction qui protège le coeur de l’application et l’isole des outils et technologies externes – qui peuvent être considérés comme étant sans importance pour l’application.
 
-You can run your application in dev mode that enables live coding using:
-```shell script
-./mvnw compile quarkus:dev
-```
+## Quels sont les principaux composants de l’architecture Hexagonale?
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+### Ports
+Nous pouvons considérer un Port comme un point d’entrée agnostique en termes de technologie, il détermine l’interface qui servira aux acteurs externes à communiquer avec l’application, peu importe qui ou quoi implémentera ladite interface. Tout comme un port USB sert à communiquer à plusieurs types de périphériques avec un ordinateur tant qu’ils disposent d’un adaptateur USB. Les Ports servent également à l’application pour communiquer avec des systèmes ou services externes, tels que des bases de données, des brokers de messages, d’autres applications, etc.
 
-## Packaging and running the application
+### Adaptateurs – Adapters
+Un Adaptateur initiera l’interaction avec l’Application via un Port, en utilisant une technologie spécifique. Par exemple, un contrôleur REST représenterait un adaptateur qui permet à un client de communiquer avec l’Application. Il peut y avoir autant d’Adaptateurs pour un seul Port que nécessaire, sans que cela représente un risque pour les Ports ou l’Application elle-même.
 
-The application can be packaged using:
-```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+### Application
+L’Application est le cœur du système, elle contient les Services d’Application qui orchestrent la fonctionnalité ou les cas d’utilisation. Elle est représentée par un hexagone qui reçoit des commandes ou des requêtes des Ports, et envoie des demandes à d’autres acteurs externes, comme les bases de données, via les Ports également.
 
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
-```
+## Packaging
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+<pre><span>hexagonal<br>|<br>| - account<br>    | - adapter<br>    |    | - driving<br>    |    |    | - api<br>    |    |    |    | - AccountApi<br>    |    |    |    | - AccountResource<br>    |    |    | - web<br>    |    |         | - AccountController<br>    |    | - driven<br>    |    |    | - persistence<br>    |              | - AccountRepository<br>    | - application<br>    |    | - port<br>    |    |    | - driving<br>    |    |    |    | - SendMoneyUseCase<br>    |    |    | - driven<br>    |    |         | - LoadAccountPort<br>    |    |         | - UpdateAccountStatePort<br>    |    | - service<br>    |              | - AccountServiceImpl<br>    | - domain<br>    |    | - model<br/>    |              | - Account<br>    |              | - Transaction<br></span></pre>
 
-## Creating a native executable
+## Répartition en projet
 
-You can create a native executable using: 
-```shell script
-./mvnw package -Pnative
-```
+### Projet API
+<pre><span>hexagonal<br>|<br>| - account<br>    | - adapter<br>    |    | - driving<br>    |    |    | - api<br>    |    |    |    | - AccountApi<br>    | - application<br>    |    | - port<br>    |    |    | - driving<br>    |    |    |    | - SendMoneyUseCase<br>    |    |    | - driven<br>    |    |         | - LoadAccountPort<br>    |    |         | - UpdateAccountStatePort<br>    | - domain<br>         | - model<br/>              | - Account<br>              | - Transaction<br></span></pre>
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/quarkus-hexagonal-test-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
-
-## Related Guides
-
-- RESTEasy JAX-RS ([guide](https://quarkus.io/guides/rest-json)): REST endpoint framework implementing JAX-RS and more
-
-## Provided Code
-
-### RESTEasy JAX-RS
-
-Easily start your RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+### Projet CORE
+<pre><span>hexagonal<br>|<br>| - account<br>    | - adapter<br>    |    | - driving<br>    |    |    | - api<br>    |    |    |    | - AccountResource<br>    |    |    | - web<br>    |    |         | - AccountController<br>    |    | - driven<br>    |    |    | - persistence<br>    |              | - AccountRepository<br>    | - application<br>    |    | - service<br>    |              | - AccountServiceImpl</span></pre>

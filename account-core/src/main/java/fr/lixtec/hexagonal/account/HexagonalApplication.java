@@ -1,4 +1,4 @@
-package fr.lixtec.hexagonal;
+package fr.lixtec.hexagonal.account;
 
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;

@@ -1,4 +1,4 @@
-package fr.lixtec.hexagonal.adapter.driven.persistence.dto;
+package fr.lixtec.hexagonal.account.adapter.driven.persistence.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -1,14 +1,14 @@
-package fr.lixtec.hexagonal.adapter.driven.persistence;
+package fr.lixtec.hexagonal.account.adapter.driven.persistence;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.lixtec.hexagonal.account.adapter.driven.persistence.dto.AccountDto;
+import fr.lixtec.hexagonal.account.adapter.driven.persistence.dto.TransactionDto;
 import fr.lixtec.hexagonal.account.application.port.driving.LoadAccountPort;
 import fr.lixtec.hexagonal.account.application.port.driving.ManageAccountPort;
 import fr.lixtec.hexagonal.account.domain.model.Account;
 import fr.lixtec.hexagonal.account.domain.model.Transaction;
-import fr.lixtec.hexagonal.adapter.driven.persistence.dto.AccountDto;
-import fr.lixtec.hexagonal.adapter.driven.persistence.dto.TransactionDto;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;

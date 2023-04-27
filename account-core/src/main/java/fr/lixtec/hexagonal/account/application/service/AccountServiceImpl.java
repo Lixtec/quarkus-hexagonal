@@ -1,10 +1,11 @@
-package fr.lixtec.hexagonal.application.service;
+package fr.lixtec.hexagonal.account.application.service;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import fr.lixtec.hexagonal.account.adapter.driven.persistence.AccountRepository;
 import fr.lixtec.hexagonal.account.application.port.driven.CreateAccountUseCase;
 import fr.lixtec.hexagonal.account.application.port.driven.DepositMoneyUseCase;
 import fr.lixtec.hexagonal.account.application.port.driven.TransferMoneyUseCase;
@@ -12,7 +13,6 @@ import fr.lixtec.hexagonal.account.application.port.driven.WithdrawMoneyUseCase;
 import fr.lixtec.hexagonal.account.application.port.driving.LoadAccountPort;
 import fr.lixtec.hexagonal.account.application.port.driving.ManageAccountPort;
 import fr.lixtec.hexagonal.account.domain.model.Account;
-import fr.lixtec.hexagonal.adapter.driven.persistence.AccountRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 

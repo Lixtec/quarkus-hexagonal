@@ -1,4 +1,4 @@
-package fr.lixtec.hexagonal.account.adapter.driving;
+package fr.lixtec.hexagonal.account.adapter.driving.api;
 
 import java.math.BigDecimal;
 import java.util.List;

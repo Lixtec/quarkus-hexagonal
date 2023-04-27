@@ -1,9 +1,8 @@
-package fr.lixtec.hexagonal.adapter.driving;
+package fr.lixtec.hexagonal.account.adapter.driving.api;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import fr.lixtec.hexagonal.account.adapter.driving.AccountApi;
 import fr.lixtec.hexagonal.account.application.port.driven.CreateAccountUseCase;
 import fr.lixtec.hexagonal.account.application.port.driven.DepositMoneyUseCase;
 import fr.lixtec.hexagonal.account.application.port.driven.TransferMoneyUseCase;
