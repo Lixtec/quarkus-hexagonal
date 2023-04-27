@@ -14,6 +14,7 @@ project(':account-core'){
        //quarkus
        implementation enforcedPlatform("io.quarkus.platform:quarkus-bom:${quarkusVersion}")
        implementation group:'io.quarkus', name: 'quarkus-arc', version:quarkusVersion
+       implementation group:'io.quarkus', name: 'quarkus-container-image-docker', version:quarkusVersion
        implementation group:'io.quarkus', name: 'quarkus-hibernate-orm', version:quarkusVersion
        implementation group:'io.quarkus', name: 'quarkus-jdbc-h2', version:quarkusVersion
        implementation group:'io.quarkus', name: 'quarkus-resteasy', version:quarkusVersion
