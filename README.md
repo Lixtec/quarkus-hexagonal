@@ -1,4 +1,4 @@
-# quarkus-hexagonal Projet
+# Illustration de l'architecture Hexagonale avec Quarkus
 
 Ce projet est l'illustration de l'article [Architecture Hexagonale : Comment créer des applications polyvalentes](https://lixtec.fr/architecture-hexagonale-hexagonal-architecture)
 
