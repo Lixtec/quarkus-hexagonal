@@ -1,7 +1,5 @@
 rootProject.name = 'quarkus-hexagonal'
 
 /** Projet importé */
-//include 'account-api'
-//include 'account-spi'
-include 'account-domain'
-//include 'account-core'
+include 'account-api'
+include 'account-core'

@@ -36,7 +36,10 @@ def fix_version = new fr.lixbox.gradle.project.ProjectVersion(
     System.env.SOURCE_BUILD_NUMBER
     ).toString()
 def isProd=ext.env.equals('prod') 
-
+if (config.desc_project.withQuarkus)
+{
+    apply from: 'gradle/with-quarkus.gradle'  
+}
 apply from: 'gradle/project-critical-update.gradle'
 
 import org.ajoberstar.grgit.Credentials
@@ -63,12 +66,10 @@ subprojects {
     apply plugin: 'eclipse-wtp'
 
     task javadocJar(type: Jar) {
-	    classifier = 'javadoc'
 	    from javadoc
 	}
 	
 	task sourcesJar(type: Jar) {
-	    classifier = 'sources'
 	    from sourceSets.main.allSource
 	}
 	
@@ -82,9 +83,17 @@ subprojects {
         failOnError = false
     }
      
-    sourceCompatibility = 11
-    targetCompatibility = 11
-    compileJava.options.encoding = 'UTF-8'
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    compileJava {
+        options.encoding = 'UTF-8'
+        options.compilerArgs << '-parameters'
+    }
+    
+    compileTestJava {
+        options.encoding = 'UTF-8'
+    }
+
     
     
     tasks.withType(JavaCompile) {
@@ -144,9 +153,9 @@ subprojects {
     
     jacocoTestReport {
         reports {
-            xml.enabled true
-            csv.enabled false
-            html.destination file("${buildDir}/reports/jacoco")
+            xml.required = true
+            csv.required = false
+            html.outputLocation  = file("${buildDir}/reports/jacoco")
         }
     }
 

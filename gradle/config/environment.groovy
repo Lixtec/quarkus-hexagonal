@@ -1,5 +1,7 @@
 desc_project{
-    type="library"
+    type="app-docker"
+    withDocker=true
+    withQuarkus=true
     version{
         majorVersion=11
         mediumVersion=1

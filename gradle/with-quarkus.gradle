@@ -1,0 +1,9 @@
+//subprojects {
+//    task prepareQuarkusTestOnEclipse(group: "quarkus", type: Copy) {
+//        description 'This is workaround to generate pom.xml, needed for @QuarkusTest tests.'
+//        dependsOn('publishToMavenLocal')
+//        from "$buildDir/publications/mavenJava/pom-default.xml"
+//        into '.'
+//        rename('pom-default.xml', 'pom.xml')
+//    }
+//}

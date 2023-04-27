@@ -1,0 +1,30 @@
+project(':account-api'){
+	dependencies { 
+	    //lixbox
+        api(group: 'fr.lixbox.lixbox-common', name: 'lixbox-core', version: version_lixbox_common)
+        api(group: 'fr.lixbox.lixbox-io', name: 'lixbox-json', version: version_lixbox_io)
+        
+        
+        //jakarta
+        implementation group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.1'
+        implementation group: 'jakarta.ws.rs', name: 'jakarta.ws.rs-api', version: '3.1.0'
+        
+       
+        // ================================ Test ================================
+        testImplementation group:'io.quarkus', name: 'quarkus-junit5', version:quarkusVersion
+	}
+    
+    jar{
+       manifest {
+            attributes(
+                "Implementation-Title": project.name, 
+                "Implementation-Version": archiveVersion, 
+                "Implementation-Timestamp": new Date()
+            )
+        }
+    }
+    
+    test {
+      useJUnitPlatform()
+    }
+}
